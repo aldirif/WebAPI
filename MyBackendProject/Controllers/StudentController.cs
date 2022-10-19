@@ -8,6 +8,7 @@ using MyBackendProject.Models;
 
 namespace MyBackendProject.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StudentController : ControllerBase
@@ -15,9 +16,9 @@ namespace MyBackendProject.Controllers
         private readonly IStudent _student;
         private readonly IMapper _mapper;
 
-        public StudentController(IStudent studentDAL, IMapper mapper)
+        public StudentController(IStudent student, IMapper mapper)
         {
-            _student = studentDAL;
+            _student = student;
             _mapper = mapper;
         }
 
@@ -56,14 +57,6 @@ namespace MyBackendProject.Controllers
             }
             return studentDtos;
         }
-
-        [HttpGet("WithCourse")]
-        public IEnumerable<StudentWithCourseDTO> GetAllStudentWitchCourse()
-        {
-            var results = _student.GetAllStudentWithCourse();
-            var DTO = _mapper.Map<IEnumerable<StudentWithCourseDTO>>(results);
-            return DTO;
-        }
         [HttpPost]
         public IActionResult Post(StudentAddDTO studentCreateDto)
         {
@@ -73,7 +66,7 @@ namespace MyBackendProject.Controllers
                 var result = _student.Insert(newStudent);
                 var Dto = _mapper.Map<StudentGetDTO>(result);
 
-                return CreatedAtAction("Get", new { id = result.ID }, Dto);
+                return CreatedAtAction("Get", new { id = Dto.ID }, Dto);
             }
             catch (Exception ex)
             {
@@ -111,11 +104,41 @@ namespace MyBackendProject.Controllers
             }
         }
         [HttpGet("WithCourseId")]
-        public StudentWithCourseIdDTO GetStudentWithCourse(int id)
+        public StudentWithCourseDTO GetStudentWithCourse(int studentId)
         {
-            var student = _student.GetStudentWithCourse(id);
-            var DTO = _mapper.Map<StudentWithCourseIdDTO>(student);
+            var student = _student.GetStudentWithCourse(studentId);
+            var DTO = _mapper.Map<StudentWithCourseDTO>(student);
             return DTO;
+        }
+
+        [HttpGet("GetAllWithCourses")]
+        public IEnumerable<StudentWithCourseDTO> GetAllWithCourse()
+        {
+            var results = _student.GetAllWithCourse();
+            var DTO = _mapper.Map<IEnumerable<StudentWithCourseDTO>>(results);
+            return DTO;
+        }
+
+        [HttpGet("Remove")]
+        public IEnumerable<StudentEditDTO> GetEdit()
+        {
+            var result = _student.GetAll();
+            var DTO = _mapper.Map<IEnumerable<StudentEditDTO>>(result);
+            return DTO;
+        }
+
+        [HttpPost("StudentToCourse")]
+        public IActionResult AddStudentToCourse(AddStudentToCourseDTO addStudentToCourse)
+        {
+            try
+            {
+                _student.AddStudentToCourse(addStudentToCourse.StudentID, addStudentToCourse.CourseID);
+                return Ok($"Student id {addStudentToCourse.StudentID} berhasil ditambahkan ke course {addStudentToCourse.CourseID}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

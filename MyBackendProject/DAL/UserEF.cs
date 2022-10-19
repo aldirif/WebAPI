@@ -9,11 +9,11 @@ using System.Text;
 
 namespace MyBackendProject.DAL
 {
-    public class UserDAL : IUser
+    public class UserEF : IUser
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly AppSettings _appSettings;
-        public UserDAL(UserManager<IdentityUser> userManager,
+        public UserEF(UserManager<IdentityUser> userManager,
             IOptions<AppSettings> appSettings)
         {
             _userManager = userManager;

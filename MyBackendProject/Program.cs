@@ -54,10 +54,10 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-builder.Services.AddScoped<IUser, UserDAL>();
-builder.Services.AddScoped<IStudent, StudentDAL>();
-builder.Services.AddScoped<ICourse, CourseDAL>();
-builder.Services.AddScoped<IEnrollment, EnrollmentDAL>();
+builder.Services.AddScoped<IUser, UserEF>();
+builder.Services.AddScoped<IStudent, StudentEF>();
+builder.Services.AddScoped<ICourse, CourseEF>();
+builder.Services.AddScoped<IEnrollment, EnrollmentEF>();
 
 var app = builder.Build();
 

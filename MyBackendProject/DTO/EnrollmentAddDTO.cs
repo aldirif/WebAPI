@@ -1,6 +1,5 @@
 ﻿namespace MyBackendProject.DTO
 {
-    
     public class EnrollmentAddDTO
     {
         public int CourseID { get; set; }

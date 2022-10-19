@@ -3,22 +3,23 @@ using MyBackendProject.DAL;
 using MyBackendProject.Models;
 
 namespace MyBackendProject.DAL
-{  
-    public class CourseDAL : ICourse
+{
+    public class EnrollmentEF : IEnrollment
     {
         private AppDbContext _dbcontext;
-        public CourseDAL(AppDbContext dbcontext)
+        public EnrollmentEF(AppDbContext dbcontext)
         {
             _dbcontext = dbcontext;
         }
+
         public void Delete(int id)
         {
-            var deleteCourse = GetById(id);
-            if (deleteCourse == null)
+            var deleteEnrollment = GetById(id);
+            if (deleteEnrollment == null)
                 throw new Exception($"Data dengan id {id} tidak ditemukan");
             try
             {
-                _dbcontext.Remove(deleteCourse);
+                _dbcontext.Remove(deleteEnrollment);
                 _dbcontext.SaveChanges();
             }
             catch (Exception ex)
@@ -26,53 +27,46 @@ namespace MyBackendProject.DAL
                 throw new Exception(ex.Message);
             }
         }
-        public IEnumerable<Course> GetAll()
+        public IEnumerable<Enrollment> GetAll()
         {
-            var results = _dbcontext.Courses.OrderBy(s => s.CourseID).ToList();
+            var results = _dbcontext.Enrollments.OrderBy(s => s.EnrollmentID).ToList();
             return results;
         }
 
-        public Course GetById(int id)
+        public Enrollment GetById(int id)
         {
-            var result = _dbcontext.Courses.FirstOrDefault(s => s.CourseID == id);
+            var result = _dbcontext.Enrollments.FirstOrDefault(s => s.EnrollmentID == id);
             if (result == null)
                 throw new Exception($"Data dengan id {id} tidak ditemukan");
             return result;
         }
-
-        public IEnumerable<Course> GetByTitle(string title)
-        {
-            var results = _dbcontext.Courses.Where(s => s.Title.Contains(title)).ToList();
-            return results;
-        }
-
-        public Course Insert(Course course)
+        public Enrollment Insert(Enrollment enrollment)
         {
             try
             {
-                _dbcontext.Courses.Add(course);
+                _dbcontext.Enrollments.Add(enrollment);
                 _dbcontext.SaveChanges();
-                return course;
+                return enrollment;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-
         }
 
-        public Course Update(Course course)
+        public Enrollment Update(Enrollment enrollment)
         {
             try
             {
-                var update = _dbcontext.Courses.FirstOrDefault(s => s.CourseID == course.CourseID);
+                var update = _dbcontext.Enrollments.FirstOrDefault(s => s.EnrollmentID == enrollment.EnrollmentID);
                 if (update == null)
-                    throw new Exception($"Data dengan id {course.CourseID} tidak ditemukan");
+                    throw new Exception($"Data dengan id {enrollment.CourseID} tidak ditemukan");
 
-                update.Title = course.Title;
-                update.Credits = course.Credits;
+                update.CourseID = enrollment.CourseID;
+                update.StudentID = enrollment.StudentID;
+                update.Grade = enrollment.Grade;
                 _dbcontext.SaveChanges();
-                return course;
+                return enrollment;
             }
             catch (Exception ex)
             {

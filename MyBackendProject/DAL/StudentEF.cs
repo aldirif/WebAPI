@@ -3,18 +3,38 @@ using MyBackendProject.Models;
 
 namespace MyBackendProject.DAL
 {
-    public class StudentDAL : IStudent
+    public class StudentEF : IStudent
     {
         private AppDbContext _dbcontext;
-        public StudentDAL(AppDbContext dbcontext)
+        public StudentEF(AppDbContext dbcontext)
         {
             _dbcontext = dbcontext;
         }
+
+        public void AddStudentToCourse(int studentId, int courseId)
+        {
+            try
+            {
+                var student = _dbcontext.Students.FirstOrDefault(s => s.ID == studentId);
+                var course = _dbcontext.Courses.FirstOrDefault(c => c.CourseID == courseId);
+                if (student != null && course != null)
+                {
+
+
+                    _dbcontext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public void Delete(int id)
         {
             var deleteStudent = GetById(id);
             if (deleteStudent == null)
-                throw new Exception($"Data dengan id {id} tidak ditemukan");
+                throw new Exception($"Data student dengan id {id} tidak ditemukan");
             try
             {
                 _dbcontext.Remove(deleteStudent);
@@ -32,7 +52,7 @@ namespace MyBackendProject.DAL
             return results;
         }
 
-        public IEnumerable<Student> GetAllStudentWithCourse()
+        public IEnumerable<Student> GetAllWithCourse()
         {
             var results = _dbcontext.Students.Include(s => s.Enrollments).ThenInclude(s => s.Course).ToList();
             return results;
@@ -52,13 +72,13 @@ namespace MyBackendProject.DAL
             return results;
         }
 
-        public Student GetStudentWithCourse(int id)
+        public Student GetStudentWithCourse(int studentId)
         {
-            var result = _dbcontext.Students.Include(s => s.Enrollments)
-             .FirstOrDefault(s => s.ID == id);
-            if (result == null)
-                throw new Exception($"Student id{id} tidak ditemukan");
-            return result;
+            var results = _dbcontext.Students.Include(s => s.Enrollments).ThenInclude(s => s.Course)
+                .FirstOrDefault(s => s.ID == studentId);
+            if (results == null)
+                throw new Exception($"Student id {studentId} tidak ditemukan");
+            return results;
         }
 
         public Student Insert(Student student)
@@ -76,16 +96,28 @@ namespace MyBackendProject.DAL
 
         }
 
-        public Student Update(Student student)
+        public void RemoveCourseFromStudent(int studentId)
         {
             try
             {
-                var update = _dbcontext.Students.FirstOrDefault(s => s.ID == student.ID);
-                if (update == null)
-                    throw new Exception($"Data dengan id {student.ID} tidak ditemukan");
+                _dbcontext.Database.ExecuteSqlInterpolated($"exec dbo.DeleteQuotesForSamurai {studentId}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
-                update.LastName = student.LastName;
-                update.FirstMidName = student.FirstMidName;
+        public Student Update(Student student)
+        {
+            var updateStudent = GetById(student.ID);
+            if (updateStudent == null)
+                throw new Exception($"Data dengan id {student.ID} tidak ditemukan");
+            try
+            {
+                updateStudent.LastName = student.LastName;
+                updateStudent.FirstMidName = student.FirstMidName;
+                updateStudent.EnrollmentDate = student.EnrollmentDate;
                 _dbcontext.SaveChanges();
                 return student;
             }

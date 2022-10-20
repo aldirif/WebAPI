@@ -93,19 +93,6 @@ namespace MyBackendProject.DAL
             {
                 throw new Exception(ex.Message);
             }
-
-        }
-
-        public void RemoveCourseFromStudent(int studentId)
-        {
-            try
-            {
-                _dbcontext.Database.ExecuteSqlInterpolated($"exec dbo.DeleteQuotesForSamurai {studentId}");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
         }
 
         public Student Update(Student student)

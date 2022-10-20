@@ -59,22 +59,6 @@ namespace MyBackendProject.Controllers
             }
         }
 
-        [HttpPut]
-        public IActionResult Put(EnrollmentEditDTO enrollmentDto)
-        {
-            try
-            {
-                var update = _mapper.Map<Enrollment>(enrollmentDto);
-                var result = _enrollment.Update(update);
-                var DTO = _mapper.Map<EnrollmentGetDTO>(result);
-                return Ok(enrollmentDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

@@ -119,14 +119,6 @@ namespace MyBackendProject.Controllers
             return DTO;
         }
 
-        [HttpGet("Remove")]
-        public IEnumerable<StudentEditDTO> GetEdit()
-        {
-            var result = _student.GetAll();
-            var DTO = _mapper.Map<IEnumerable<StudentEditDTO>>(result);
-            return DTO;
-        }
-
         [HttpPost("StudentToCourse")]
         public IActionResult AddStudentToCourse(AddStudentToCourseDTO addStudentToCourse)
         {

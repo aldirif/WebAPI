@@ -53,25 +53,5 @@ namespace MyBackendProject.DAL
                 throw new Exception(ex.Message);
             }
         }
-
-        public Enrollment Update(Enrollment enrollment)
-        {
-            try
-            {
-                var update = _dbcontext.Enrollments.FirstOrDefault(s => s.EnrollmentID == enrollment.EnrollmentID);
-                if (update == null)
-                    throw new Exception($"Data dengan id {enrollment.CourseID} tidak ditemukan");
-
-                update.CourseID = enrollment.CourseID;
-                update.StudentID = enrollment.StudentID;
-                update.Grade = enrollment.Grade;
-                _dbcontext.SaveChanges();
-                return enrollment;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
     }
 }

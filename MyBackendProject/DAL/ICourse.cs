@@ -11,5 +11,6 @@ namespace MyBackendProject.DAL
         public Course Insert(Course course);
         public Course Update(Course course);
         public void Delete(int id);
+        Task<IEnumerable<Course>> Pagging(int skip, int take);
     }
 }

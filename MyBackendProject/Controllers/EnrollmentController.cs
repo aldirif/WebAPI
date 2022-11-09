@@ -72,5 +72,16 @@ namespace MyBackendProject.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpGet("Pagging")]
+        public async Task<IEnumerable<EnrollmentStudentCourseDTO>> Pagging(int skip, int take)
+        {
+
+            var results = await _enrollment.Pagging(skip, take);
+            var DTO = _mapper.Map<IEnumerable<EnrollmentStudentCourseDTO>>(results);
+
+            return DTO;
+        }
     }
 }

@@ -53,5 +53,12 @@ namespace MyBackendProject.DAL
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<IEnumerable<Enrollment>> Pagging(int skip, int take)
+        {
+            var results = await _dbcontext.Enrollments.Include(s => s.Course).Include(s => s.Student)
+               .Skip(skip).Take(take).ToArrayAsync();
+            return results;
+        }
     }
 }

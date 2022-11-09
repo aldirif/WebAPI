@@ -95,6 +95,13 @@ namespace MyBackendProject.DAL
             }
         }
 
+        public async Task<IEnumerable<Student>> Pagging(int skip, int take)
+        {
+            var results = await _dbcontext.Students
+               .Skip(skip).Take(take).ToArrayAsync();
+            return results;
+        }
+
         public Student Update(Student student)
         {
             var updateStudent = GetById(student.ID);

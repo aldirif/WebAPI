@@ -70,6 +70,13 @@ namespace MyBackendProject.DAL
 
         }
 
+        public async Task<IEnumerable<Course>> Pagging(int skip, int take)
+        {
+            var results = await _dbcontext.Courses
+               .Skip(skip).Take(take).ToArrayAsync();
+            return results;
+        }
+
         public Course Update(Course course)
         {
             var updateCourse = GetById(course.CourseID);
